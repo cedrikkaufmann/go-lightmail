@@ -1,35 +1,35 @@
 package lightmail
 
 import (
-	"bytes"
 	"crypto/tls"
 	"github.com/oxtoacart/bpool"
+	"net/mail"
 )
 
 const (
-	mimePlainText                       = "text/plain"
-	mimeHTML							= "text/html"
-	headerFrom                          = "From"
-	headerTo                            = "To"
-	headerSubject                       = "Subject"
-	headerMessageId						= "Message-Id"
+	mimePlainText   = "text/plain"
+	mimeHTML        = "text/html"
+	headerFrom      = "From"
+	headerTo        = "To"
+	headerSubject   = "Subject"
+	headerMessageId = "Message-Id"
 )
 
 type MailService struct {
 	config *SMTPConfig
-	bpool *bpool.BufferPool
+	bpool  *bpool.BufferPool
 }
 
-func NewMailService(config *SMTPConfig) *MailService{
+func NewMailService(config *SMTPConfig) *MailService {
 	return &MailService{
 		config: config,
-		bpool: bpool.NewBufferPool(48),
+		bpool:  bpool.NewBufferPool(48),
 	}
 }
 
 type Mail interface {
-	Send(from string, to []string, subject string) bool
-	ExecuteTemplate(buffer *bytes.Buffer, data interface{}) error
+	Send(from *mail.Address, to []*mail.Address, subject string) error
+	ExecuteTemplate(data interface{}) error
 }
 
 type SMTPConfig struct {
